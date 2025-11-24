@@ -60,11 +60,32 @@ app.post('/login', async (req, res) => {
 
 app.get('/logout', (req, res) => { req.session.destroy(); res.redirect('/login'); });
 
-// === CRUD Web ===
+//CRUD webpage
 app.get('/list', requireLogin, async (req, res) => {
-    const flights = await db.collection('flights').find({ userid: req.session.user.id }).sort({ createdAt: -1 }).toArray();
+    const searchTerm = req.query.q || '';
+    let flights;
+
+    if (searchTerm) {
+        
+        const searchQuery = {
+            userid: req.session.user.id,
+            $or: [
+                { flightNumber: { $regex: searchTerm, $options: 'i' } },
+                { destination: { $regex: searchTerm, $options: 'i' } },
+                { airline: { $regex: searchTerm, $options: 'i' } },
+                { departureAirport: { $regex: searchTerm, $options: 'i' } },
+                { arrivalAirport: { $regex: searchTerm, $options: 'i' } }
+            ]
+        };
+        flights = await db.collection('flights').find(searchQuery).sort({ createdAt: -1 }).toArray();
+    } else {
+       
+        flights = await db.collection('flights').find({ userid: req.session.user.id }).sort({ createdAt: -1 }).toArray();
+    }
+
     res.render('list', { flights, user: req.session.user, success: req.query.success });
 });
+
 
 app.get('/details', requireLogin, async (req, res) => {
     const flight = await db.collection('flights').findOne({ _id: new ObjectId(req.query._id), userid: req.session.user.id });
