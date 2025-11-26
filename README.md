@@ -132,12 +132,12 @@ curl -c cookie.txt -X POST https://comp3810sef-group19-vubv.onrender.com/login \
 
 #### 2. Read All Flights
 ```bash
-curl -b cookie.txt https://comp3810sef-group19-vubv.onrender.com/api/flights | jq
+curl -b cookie.txt https://comp3810sef-group19-vubv.onrender.com/api/flights
 ```
 
 #### 3. Read Specific Flight
 ```bash
-curl -b cookie.txt https://comp3810sef-group19-vubv.onrender.com/api/flights/FLIGHT_NUMBER | jq
+curl -b cookie.txt https://comp3810sef-group19-vubv.onrender.com/api/flights/FLIGHT_NUMBER
 ```
 
 #### 4. Create Flight
